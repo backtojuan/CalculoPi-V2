@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  * Tarea 2: mat-mult-RMI
+  *
+  * Author: Lina Salinas, Juan José Valencia
+-->
+
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+  xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+  name="ServerRMI">
+
+  <component name="server">
+ 
+    <service name="s">
+      <frascati:binding.rmi host="localhost" serviceName="rmiservice" port="1099"/>
+    </service>
+ 
+    <implementation.java class="org.ow2.frascati.tareafinal.calcularpi.annotated.Server"/>
+ 
+  </component>
+
+</composite>
