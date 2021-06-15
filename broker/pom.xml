@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+  * Tarea Final: CalculoPi-RMI
+  *
+  * Author: Lina Salinas, Juan José Valencia, Jhon Edward Mora
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.ow2.frascati.tareafinal</groupId>
+  <artifactId>CalculoPi-client</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Tarea Final : CalculoPi</name>
+
+  <parent>
+    <groupId>org.ow2.frascati.tareafinal</groupId>
+    <artifactId>CalculoPi-parent</artifactId>
+    <version>1.4</version>
+  </parent>
+
+  <properties>
+    <composite.file>CalculoPi-client</composite.file>
+    <service.name>r</service.name>
+    <method.name>run</method.name>
+  </properties>
+
+</project>

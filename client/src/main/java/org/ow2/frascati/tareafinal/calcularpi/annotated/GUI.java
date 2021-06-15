@@ -7,8 +7,10 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import java.util.UUID;
+import javax.swing.JFileChooser;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class GUI extends JFrame {
 
@@ -86,5 +88,31 @@ public class GUI extends JFrame {
 
 	public JButton getLoadFileButton() {
 		return loadFileBtton;
+	}
+
+	public File OpenFile(){
+		
+		File file = null;
+
+		JFileChooser fileChooser = new JFileChooser();
+    	fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		
+		int result = fileChooser.showOpenDialog(this);
+    	try
+		{
+			if (result != JFileChooser.CANCEL_OPTION) 
+			{
+				file = fileChooser.getSelectedFile();
+				if ((file == null) || (file.getName().equals(""))) 
+				{
+					throw new FileNotFoundException();
+				}																	
+			}
+		}
+		catch(FileNotFoundException fne){
+			System.out.println("El archivo no existe");
+			fne.printStackTrace();
+		}		
+		return file;
 	}
 }
