@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  * Tarea Final: CalcularPi-RMI
+  *
+  * Author: Lina Salinas, Juan José Valencia, Jhon Edward Mora
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+	name="BrokerRMI">
+
+	<component name="broker">
+		<service name="b">
+			<frascati:binding.rmi host="localhost" serviceName="iBroker" port="1099"/>
+		</service>
+		<implementation.java class="org.ow2.frascati.tareafinal.calcularpi.annotated.Broker" />
+		
+		<reference name="multiplicarMat">
+			<frascati:binding.rmi host="localhost" serviceName="Server1" port="1099"/>
+		</reference>
+	</component>
+</composite>

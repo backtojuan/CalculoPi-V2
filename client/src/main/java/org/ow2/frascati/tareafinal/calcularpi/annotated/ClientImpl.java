@@ -28,10 +28,10 @@ public class ClientImpl
   // SCA Reference
   // --------------------------------------------------------------------------
 
-  private CalcularPi s;
+  private IBroker s;
 
   @Reference(name="calcPi")
-  public final void setCalcularService(CalcularPi service)
+  public final void setCalcularService(IBroker service)
   {
     this.s = service;
   }
@@ -130,7 +130,7 @@ public class ClientImpl
             }                
             
             //Pedir el resultado
-            result = s.calcPi(puntoscirculo,puntos);  
+            result = s.calcPi(puntoscirculo,puntos,1);  
 
             results += result + "\n";
               
@@ -221,7 +221,7 @@ public class ClientImpl
                 }    
 
                 //Pedir el resultado
-                result = s.calcPi(puntoscirculo,puntos);  
+                result = s.calcPi(puntoscirculo,puntos,1);  
                 
                 //Tomar el tiempo justo después de terminar el calculo
                 end = System.currentTimeMillis();

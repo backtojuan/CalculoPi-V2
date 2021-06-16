@@ -9,5 +9,5 @@ import org.osoa.sca.annotations.Service;
 
 @Service
 public interface CalcularPi{
-  public float calcPi(long puntoscirculo, long puntostotales); 
+  public float calcPi(long puntoscirculo, long puntostotales,int asd); 
 }
