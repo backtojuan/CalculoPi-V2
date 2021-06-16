@@ -8,30 +8,26 @@ package org.ow2.frascati.tareafinal.calcularpi.annotated;
 import org.osoa.sca.annotations.Service;
 import org.osoa.sca.annotations.Reference;
 
+import java.rmi.Naming;
+import java.util.LinkedList;
+
 /**
  * Broker class that will invoke processor nodes to generate points needed for
- * the Monte Carlo simulation This class implements the method calcPi, which
- * will receive the input parameters needed in the simulation and will start the
- * required servers.
+ * the Monte Carlo simulation.
  */
 @Service
-public class Broker implements IBroker {
+public class Broker implements IBroker{
+	
+	//Total points inside the circle found by the nodes
+	private long found;
 
-	// Referenced servers
-	private PointGenerator s1;
-	/*private PointGenerator s2;
-	private PointGenerator s3;
-	private PointGenerator s4;
-	private PointGenerator s5;
-	private PointGenerator s6;
-	private PointGenerator s7;
-	private PointGenerator s8;*/
-	
-	@Reference
-	public final void setServer1(PointGenerator service) {
-		s1 = service;
-	}
-	
+	//Clients and Servers Uris
+	private static LinkedList<String> clientUris=new LinkedList();
+	private static LinkedList<String> serverUris=new LinkedList();
+
+	//Servers and Clients list
+	LinkedList<Server> servers = new LinkedList<Server>();
+	LinkedList<Client> clients = new LinkedList<ClientImpl>();
 
 	/**
 	 * Default constructor method, as needed by FraSCAti
@@ -40,30 +36,45 @@ public class Broker implements IBroker {
 		System.out.println("Broker started");
 	}
 
-	/**
-	 * Starts the point generation process and calculates an approximation of Pi
-	 * with obtained results from different servers.
-	 * 
-	 * @param totalPuntos the total points to be generated for the estimation
-	 * @param seed        the seed to be used by the pseudorandom number generator
-	 *                    for the process of point generation
-	 * @param numNodos    total number of computational nodes to be used in the
-	 *                    estimation
-	 */
-	public float calcPi(long totalPuntos, long seed, long numNodos) {
-		long pointDivision = totalPuntos / numNodos;
-		long found = 0;
-		found += s1.generatePoints(pointDivision,seed,PointGenerator.FIRST);
-		/*found += s2.generatePoints(pointDivision,seed,PointGenerator.SECOND);
-		found += s3.generatePoints(pointDivision,seed,PointGenerator.THIRD);
-		found += s4.generatePoints(Math.ceil(pointDivision),seed,PointGenerator.FOURTH);*/
-		if(numNodos==8) {
-			/*
-			found += s5.generatePoints(pointDivision,seed,PointGenerator.FIRST);
-			found += s6.generatePoints(pointDivision,seed,PointGenerator.SECOND);
-			found += s7.generatePoints(pointDivision,seed,PointGenerator.THIRD);
-			found += s8.generatePoints(pointDivision,seed,PointGenerator.FOURTH);*/
-		}
-		return 4*(found/totalPuntos);
+	//Subscribe client to broker
+	public synchronized void attachClient(String clientUri) {
+		try {
+            Client client = (ClientImpl) Naming.lookup(clientUri);
+            System.out.println("Conectado nuevo cliente :" + clientUri);
+        } catch (Exception e) {
+            System.out.println("error al hacer binding con : " + clientUri);
+            e.printStackTrace();
+        }
+	}
+	
+	//Unsubscribe client from broker
+	public synchronized void detachClient(String clientUri) {
+		int index = clientUris.indexOf(clientUri);
+		String uriRemoved=clientUris.remove(index);
+		clients.remove(index);		
+		assert(clientUri.equals(uriRemoved));		
+	}
+
+	//Subscribe server to broker
+	public synchronized void attachServer(String serverUri) {
+		try {
+            Server sever =(Server) Naming.lookup(serverUri);
+            System.out.println("Conectado nuevo server :" + serverUri);
+        } catch (Exception e) {
+            System.out.println("error al hacer binding con : " + serverUri);
+            e.printStackTrace();
+        }
+	}
+	
+	//Unsubscribe server from broker
+	public synchronized void detachServer(String serverUri) {
+		int index = serverUris.indexOf(serverUri);
+		String uriRemoved=serverUris.remove(index);
+		servers.remove(index);	
+		assert(serverUri.equals(uriRemoved));				
+	}
+
+	public synchronized void getPoints(long resultpoints){
+		this.found += found;
 	}
 }

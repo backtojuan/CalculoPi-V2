@@ -22,7 +22,7 @@
   </parent>
 
   <properties>
-    <composite.file>CalculoPi-client</composite.file>
+    <composite.file>CalculoPi-broker</composite.file>
     <service.name>r</service.name>
     <method.name>run</method.name>
   </properties>

@@ -3,12 +3,25 @@
 	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
 	name="ServerRMI">
 
+  <service name="r" promote="server/r">
+    <interface.java interface="java.lang.Runnable" />
+  </service>
+
   <component name="server">
- 
-    <service name="s">
-      <frascati:binding.rmi host="localhost" serviceName="Server1" port="1099"/>
+      
+    <service name="r">
+      <interface.java interface="java.lang.Runnable" />
     </service>
- 
+    
+		<service name="generatePoints">
+			<interface.java interface="PointGenerator"></interface.java>
+			<frascati:binding.rmi host="localhost" serviceName="rmiservice2" port="1099"/>
+		</service>
+
+    <reference name="comBroker">
+      <frascati:binding.rmi host="localhost" serviceName="rmiservice3" port="2001"/>
+    </reference>
+	
     <implementation.java class="org.ow2.frascati.tareafinal.calcularpi.annotated.Server"/>
  
   </component>

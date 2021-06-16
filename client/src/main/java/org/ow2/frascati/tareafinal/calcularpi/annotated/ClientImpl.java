@@ -7,6 +7,7 @@ package org.ow2.frascati.tareafinal.calcularpi.annotated;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Property;
 
 import java.util.Scanner;
 import java.util.Random;
@@ -22,20 +23,31 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ClientImpl
-  implements Runnable
+  implements CalculatePi, Runnable
 {
   //--------------------------------------------------------------------------
   // SCA Reference
   // --------------------------------------------------------------------------
+  
+  @Property
+	private String clienturi;
+  
+  private PointReceiver pr;
+  private IBroker br;
 
-  private IBroker s;
-
-  @Reference(name="calcPi")
-  public final void setCalcularService(IBroker service)
+  @Reference(name="receivePoints")
+  public final void setRecibirService(PointReceiver service)
   {
-    this.s = service;
+    this.pr = service;
   }
 
+  @Reference(name="comBroker")
+  public final void setBrokerService(IBroker service)
+  {
+    this.br = service;
+  }
+
+  //GUI
   private static GUI gui;
 
   //--------------------------------------------------------------------------
@@ -45,6 +57,7 @@ public class ClientImpl
   public ClientImpl()
   {
     System.out.println("CLIENT created");
+    br.attachClient(clienturi);
   }
 
   @Init
@@ -66,9 +79,10 @@ public class ClientImpl
         gui = new GUI();
         gui.setLocationRelativeTo(null);
         gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        gui.setVisible(true);        
-        calcBttonEvent();
-        loadFileBttonEvent();
+        gui.setVisible(true);
+
+        //calcBttonEvent();
+        //loadFileBttonEvent();
       }      
     }			
     catch(Exception e) 
@@ -76,6 +90,10 @@ public class ClientImpl
       System.out.println("No se pudo lanzar la gui");
       e.printStackTrace();
     }
+  }
+
+  public void getResult(long pi){
+      
   }
 
   public void calcBttonEvent()
@@ -115,28 +133,15 @@ public class ClientImpl
             start = System.currentTimeMillis();
 
             //Generar los puntos
-            for(int i=0; i<puntos; i++)
-            {          
-              //Generar los puntos
-              double puntox = rnd.nextDouble();
-              double puntoy = rnd.nextDouble();          
             
-              //Verificar si el punto cumple con la ecuación del circulo 
-              double radio = (puntox * puntox + puntoy * puntoy);
-              if(radio <= 1)
-              {
-                puntoscirculo++;
-              }                     
-            }                
             
             //Pedir el resultado
-            result = s.calcPi(puntoscirculo,puntos,1);  
+             
 
             results += result + "\n";
               
             //Tomar el tiempo justo después de terminar el calculo
-            end = System.currentTimeMillis();    
-            System.out.println(result);
+            end = System.currentTimeMillis();                
                         
             //Calcular el tiempo de ejecución
             averageTime += (end - start);
@@ -208,29 +213,17 @@ public class ClientImpl
                 start = System.currentTimeMillis();
 
                 //Generar los puntos
-                for(int i=0; i<puntos; i++){          
-                  //Generar los puntos
-                  double puntox = rnd.nextDouble();
-                  double puntoy = rnd.nextDouble();          
-              
-                  //Verificar si el punto cumple con la ecuación del circulo 
-                  double radio = (puntox * puntox + puntoy * puntoy);
-                  if(radio <= 1){
-                    puntoscirculo++;
-                  }                     
-                }    
+
 
                 //Pedir el resultado
-                result = s.calcPi(puntoscirculo,puntos,1);  
+                  
                 
                 //Tomar el tiempo justo después de terminar el calculo
                 end = System.currentTimeMillis();
                 
                 //Anexar a la salida el resultado
                 salida += result + ",";        
-                System.out.println(result);
-                
-                
+                                                
                 //Calcular el tiempo de ejecución
                 averageTime += (end - start);
                 
@@ -240,9 +233,7 @@ public class ClientImpl
                 System.out.println(salida);
                 //Reiniciar la variable contador de puntos de circulo
                 puntoscirculo = 0;                            
-              }
-              System.out.println(averageTime);
-              System.out.println();        
+              } 
               lineaActual++;
             }             
           }
