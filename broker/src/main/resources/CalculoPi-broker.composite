@@ -8,26 +8,19 @@
 	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
 	name="BrokerRMI">
 	
+	<service name="r" promote="broker/r"/>
+	
 	<component name="broker">
-
-		<service name="receivePoints">
-			<interface.java interface="PointReceiver"></interface.java>
-			<frascati:binding.rmi host="localhost" serviceName="rmiservice1" port="1090"/>
+		
+		<service name="r">
+			<interface.java interface="java.lang.Runnable" />
 		</service>
-
-		<service name="comBroker">
-      		<interface.java interface="IBroker"></interface.java>
+	
+		<service name="IBroker">
+      		<interface.java interface="org.ow2.frascati.tareafinal.calcularpi.annotated.IBroker"></interface.java>
       		<frascati:binding.rmi host="localhost" serviceName="rmiservice3" port="2001"/>
     	</service>  
 
-		<reference name="calculatePi">
-      		<frascati:binding.rmi host="localhost" serviceName="rmiservice4" port="2002"/>
-    	</reference>
-
-		<reference name="generatePoints">
-      		<frascati:binding.rmi host="localhost" serviceName="rmiservice2" port="1099"/>
-    	</reference>
-		
 		<implementation.java class="org.ow2.frascati.tareafinal.calcularpi.annotated.Broker" />
-	</component>
+	</component>		
 </composite>

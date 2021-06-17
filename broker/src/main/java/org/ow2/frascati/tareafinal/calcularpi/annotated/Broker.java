@@ -5,41 +5,47 @@
 */
 package org.ow2.frascati.tareafinal.calcularpi.annotated;
 
-import org.osoa.sca.annotations.Service;
-import org.osoa.sca.annotations.Reference;
-
 import java.rmi.Naming;
+
 import java.util.LinkedList;
+import java.util.ArrayList;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Broker class that will invoke processor nodes to generate points needed for
  * the Monte Carlo simulation.
  */
-@Service
-public class Broker implements IBroker{
+public class Broker implements IBroker, PointReceiver, Runnable {
 	
-	//Total points inside the circle found by the nodes
-	private long found;
-
 	//Clients and Servers Uris
 	private static LinkedList<String> clientUris=new LinkedList();
 	private static LinkedList<String> serverUris=new LinkedList();
 
 	//Servers and Clients list
-	LinkedList<Server> servers = new LinkedList<Server>();
-	LinkedList<Client> clients = new LinkedList<ClientImpl>();
+	private static LinkedList<PointGenerator> servers = new LinkedList<PointGenerator>();
+	private static LinkedList<PointReceiver> clients = new LinkedList<PointReceiver>();
+
+	//Total points inside the circle found by the nodes
+	private long pointsInside;
+
+	//Cntrolar hilos
+	private Thred thread;
+	private final static long blocksize = 100000000;
 
 	/**
 	 * Default constructor method, as needed by FraSCAti
 	 */
 	public Broker() {
-		System.out.println("Broker started");
+		System.out.println("Broker created");
 	}
 
 	//Subscribe client to broker
 	public synchronized void attachClient(String clientUri) {
 		try {
-            Client client = (ClientImpl) Naming.lookup(clientUri);
+            PointReceiver client = (PointReceiver) Naming.lookup(clientUri);
+			clients.add(client);
             System.out.println("Conectado nuevo cliente :" + clientUri);
         } catch (Exception e) {
             System.out.println("error al hacer binding con : " + clientUri);
@@ -58,7 +64,7 @@ public class Broker implements IBroker{
 	//Subscribe server to broker
 	public synchronized void attachServer(String serverUri) {
 		try {
-            Server sever =(Server) Naming.lookup(serverUri);
+            PointGenerator sever =(PointGenerator) Naming.lookup(serverUri);
             System.out.println("Conectado nuevo server :" + serverUri);
         } catch (Exception e) {
             System.out.println("error al hacer binding con : " + serverUri);
@@ -74,7 +80,40 @@ public class Broker implements IBroker{
 		assert(serverUri.equals(uriRemoved));				
 	}
 
-	public synchronized void getPoints(long resultpoints){
-		this.found += found;
+	//Recibir puntos del cliente y mandar a los servidores
+	@Override
+	public float receivePoints(long totalPuntos, long seed, long numNodos){		
+		System.out.println("Running servers: " + servers.size());
+		while(totalPuntos>0){			
+			ArrayList<Thred> threads = new ArrayList<Thred>();				
+			ExecutorService executor = Executors.newFixedThreadPool(servers.size());	
+			// Por cada servidor attacheado empezar thread
+			for(final PointGenerator server : servers){
+				if(totalPuntos>0){
+					long points = blocksize> totalPuntos ? totalPuntos:blocksize;
+					thread = new Thred(server, seed, totalPuntos);
+					threads.add(thread);
+					executor.execute(thread);
+					totalPuntos-=points;
+				}
+				else{
+					break;
+				}
+			}	
+			executor.shutdown();
+			while(!executor.isTerminated());
+
+			for(Thred t : threads){
+				pointsInside += t.getPointsInside();
+			}
+		}
+		float pi = ((float) pointsInside)/totalPuntos;                
+        pi = 4*pi;
+		return pi;
+	}
+
+	@Override
+	public void run(){
+		System.out.println("broker has been initialized");
 	}
 }

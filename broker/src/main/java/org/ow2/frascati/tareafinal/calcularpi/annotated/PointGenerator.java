@@ -5,12 +5,10 @@
 */
 package org.ow2.frascati.tareafinal.calcularpi.annotated;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 import org.osoa.sca.annotations.Service;
 
-//Generar puntos por el servidor
+//Generar puntos por el servidor (el broker pasa los puntos y la semilla al servidor)
 @Service
-public interface PointGenerator<T extends Comparable<? super T>> extends Remote{
+public interface PointGenerator{
 	public long generatePoints(long totalPoints, long seed);
 }

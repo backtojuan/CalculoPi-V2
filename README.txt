@@ -17,4 +17,4 @@ frascati run CalculoPi-client -libpath CalculoPi-client.jar -s r -m run
 ---------Compilar y correr Broker-------------------------------------
 
 frascati compile broker/src CalculoPi-broker
-frascati run CalculoPi-broker -libpath CalculoPi-broker.jar 
+frascati run CalculoPi-broker -libpath CalculoPi-broker.jar -s r -m run
