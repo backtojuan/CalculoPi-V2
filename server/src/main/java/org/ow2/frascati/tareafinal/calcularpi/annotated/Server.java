@@ -22,6 +22,10 @@ public class Server implements PointGenerator, Runnable
 
   private IBroker br;
 
+  public void setServeruir(String serveruri){
+    this.serveruri = serveruri;
+  }
+
   @Reference(name="comBroker")
   public final void setBrokerService(IBroker service)
   {
@@ -35,12 +39,6 @@ public class Server implements PointGenerator, Runnable
     {
       System.out.println("SERVER created.");		 
       br.attachServer(serveruri); 
-    }
-
-    @Init
-    public final void init()
-    {
-      System.out.println("CLIENT initialized");
     }
 
     /**
@@ -74,6 +72,7 @@ public class Server implements PointGenerator, Runnable
 	// --------------------------------------------------------------------------
 	public final void run()
 	{
-		System.out.println("hola");
+    br.attachServer(serveruri);
+    System.out.println("Server Attached to provided broker on URI: "+serveruri);
 	}
 }

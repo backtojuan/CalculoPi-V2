@@ -23,7 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ClientImpl
-  implements CalculatePi, Runnable
+  implements Runnable
 {
   //--------------------------------------------------------------------------
   // SCA Reference

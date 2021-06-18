@@ -46,9 +46,9 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 		try {
             PointReceiver client = (PointReceiver) Naming.lookup(clientUri);
 			clients.add(client);
-            System.out.println("Conectado nuevo cliente :" + clientUri);
+            System.out.println("Coneccting with client :" + clientUri);
         } catch (Exception e) {
-            System.out.println("error al hacer binding con : " + clientUri);
+            System.out.println("Error when binding with client : " + clientUri);
             e.printStackTrace();
         }
 	}
@@ -65,9 +65,9 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 	public synchronized void attachServer(String serverUri) {
 		try {
             PointGenerator sever =(PointGenerator) Naming.lookup(serverUri);
-            System.out.println("Conectado nuevo server :" + serverUri);
+            System.out.println("Coneccting new server with uri :" + serverUri);
         } catch (Exception e) {
-            System.out.println("error al hacer binding con : " + serverUri);
+            System.out.println("Error on binding with server on uri : " + serverUri);
             e.printStackTrace();
         }
 	}
@@ -83,7 +83,7 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 	//Recibir puntos del cliente y mandar a los servidores
 	@Override
 	public float receivePoints(long totalPuntos, long seed, long numNodos){		
-		System.out.println("Running servers: " + servers.size());
+		System.out.println("Running a total of " + servers.size()+" servers.");
 		while(totalPuntos>0){			
 			ArrayList<Thred> threads = new ArrayList<Thred>();				
 			ExecutorService executor = Executors.newFixedThreadPool(servers.size());	

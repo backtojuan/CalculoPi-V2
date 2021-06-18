@@ -14,7 +14,7 @@
     </service>
     
 		<service name="generatePoints">
-			<interface.java interface="PointGenerator"></interface.java>
+			<interface.java interface="org.ow2.frascati.tareafinal.calcularpi.annotated.PointGenerator"></interface.java>
 			<frascati:binding.rmi host="localhost" serviceName="rmiservice2" port="1099"/>
 		</service>
 
