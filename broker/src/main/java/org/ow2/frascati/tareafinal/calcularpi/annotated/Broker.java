@@ -83,15 +83,25 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 	//Recibir puntos del cliente y mandar a los servidores
 	@Override
 	public float receivePoints(long totalPuntos, long seed, long numNodos){		
-		System.out.println("Running a total of " + servers.size()+" servers.");
-		while(totalPuntos>0){			
-			ArrayList<Thred> threads = new ArrayList<Thred>();				
+		System.out.println("Running a total of " +numNodos+" servers of "+servers.size()+" available.");
+		//Warn
+		if(numNodos > servers.size()){
+			System.out.println("Desired number of nodes exceeds total servers available. Computing with all available servers.");
+		}
+
+		long initPoints = totalPuntos;
+		ArrayList<Thred> threads = new ArrayList<Thred>();
+		while(totalPuntos>0){
 			ExecutorService executor = Executors.newFixedThreadPool(servers.size());	
 			// Por cada servidor attacheado empezar thread
-			for(final PointGenerator server : servers){
+
+			for(int i=0; i<Math.min(numNodos,servers.size()); i++){
+				System.out.println("i="+i);
+				final PointGenerator server = servers.get(i);
+
 				if(totalPuntos>0){
 					long points = blocksize> totalPuntos ? totalPuntos:blocksize;
-					thread = new Thred(server, seed, totalPuntos);
+					thread = new Thred(server, seed, points);
 					threads.add(thread);
 					executor.execute(thread);
 					totalPuntos-=points;
@@ -107,7 +117,7 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 				pointsInside += t.getPointsInside();
 			}
 		}
-		float pi = ((float) pointsInside)/totalPuntos;                
+		float pi = ((float) pointsInside)/initPoints;                
         pi = 4*pi;
 		return pi;
 	}

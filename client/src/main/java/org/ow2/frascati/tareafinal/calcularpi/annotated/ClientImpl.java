@@ -92,7 +92,7 @@ public class ClientImpl
         gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         gui.setVisible(true);
         calcBttonEvent();
-        //loadFileBttonEvent();
+        loadFileBttonEvent();
       }      
     }			
     catch(Exception e) 
@@ -114,6 +114,7 @@ public class ClientImpl
           //Variables de entrada 			
           long puntos = 0;
           long seed = 0;  
+          long nodes = 0;
 
           //Variables de tiempo
           long start = 0;
@@ -127,35 +128,12 @@ public class ClientImpl
           //Asignar valores
           puntos = Long.parseLong(gui.getPointsTextField().getText().trim());
           seed = Long.parseLong(gui.getSeedTextField().getText().trim());
+          nodes = Long.parseLong(gui.getNodesTextField().getText().trim());
 
           //Botar resultados
-          float pi = calcBr.receivePoints(puntos, seed, 1);
+          float pi = calcBr.receivePoints(puntos, seed, nodes);
           String results = "Pi is "+pi;
-          System.out.println(results);
-
-          //Repetir el calculo 10 veces
-          for(int j=0; j<10;j++)
-          {
-            //Tomar el tiempo justo antes de empezar la ejecución
-            start = System.currentTimeMillis();
-
-            //Generar los puntos
-            
-            
-            //Pedir el resultado
-             
-
-            results += result + "\n";
-              
-            //Tomar el tiempo justo después de terminar el calculo
-            end = System.currentTimeMillis();                
-                        
-            //Calcular el tiempo de ejecución
-            averageTime += (end - start);
-
-            //Reiniciar la variable contador de puntos de circulo
-            puntoscirculo = 0;
-          }          
+          System.out.println(results);       
         }
       }
     ); 
@@ -176,6 +154,7 @@ public class ClientImpl
             //Variables de entrada 			
             long puntos = 0;
             long seed = 0;  
+            long nodos = 0;
 
             //Variables de tiempo
             long start = 0;
@@ -187,14 +166,12 @@ public class ClientImpl
             long puntoscirculo = 0;      
 
             //Preparar archivo de salida
-            String salida = "Resultado Pi, Tiempos respuesta(ms), Numero de nodos" + "\n";  
+            String salida = "Resultado Pi, Tiempos respuesta(ms), Seed, Nodos" + "\n";  
             String filePath = new File("").getAbsolutePath();		    
             File results = new File(filePath + "/client/src/main/resources/salida.csv");
             FileWriter fw = new FileWriter(results);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            Random rnd = new Random();
-                
             //Leer la primera linea pero descartarla
             String headers = reader.nextLine();
 
@@ -211,20 +188,14 @@ public class ClientImpl
               //Asignar valores
               puntos = Long.parseLong(line[0]);
               seed = Long.parseLong(line[1]);
-              rnd.setSeed(seed);
-
+              nodos = Long.parseLong(line[2]);
               //Repetir el calculo 10 veces
               for(int j=0; j<10;j++)
               {
                 //Tomar el tiempo justo antes de empezar la ejecución
                 start = System.currentTimeMillis();
-
-                //Generar los puntos
-
-
                 //Pedir el resultado
-                  
-                
+                result = calcBr.receivePoints(puntos, seed, nodos);
                 //Tomar el tiempo justo después de terminar el calculo
                 end = System.currentTimeMillis();
                 
@@ -236,11 +207,12 @@ public class ClientImpl
                 
                 //Anexar a la salida el tiempo de respuesta y el numero de procesadores
                 salida += averageTime + ",";        
-                salida += 1 + "," + "\n";
+                salida += nodos + "," + "\n";
                 System.out.println(salida);
-                //Reiniciar la variable contador de puntos de circulo
-                puntoscirculo = 0;                            
+                //Reiniciar la variable contador de puntos de circulo                         
               } 
+              fw.write(salida); 
+              fw.close();
               lineaActual++;
             }             
           }

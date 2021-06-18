@@ -37,14 +37,13 @@ public class Server implements PointGenerator, Runnable
      */
     public Server()
     {
-      System.out.println("SERVER created.");
     }
 
     /**
      * Point generation process.
      */ 
     public final long generatePoints(long totalPoints, long seed) 
-    {		
+    {	
 		  long puntoscirculo = 0;
       final long seedf = seed;
       final Random rnd = new Random(seedf);        

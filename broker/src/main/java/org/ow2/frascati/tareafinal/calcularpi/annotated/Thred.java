@@ -21,7 +21,7 @@ public class Thred extends Thread {
 	}
 
 	public void run() {
-		pointsInside = pg.generatePoints(seed, totalPoints);
+		pointsInside = pg.generatePoints(totalPoints, seed);
 		System.out.println("Thread Finished and counted "+pointsInside);
 	}
 
