@@ -1,0 +1,12 @@
+Respecto a la primera presentación del proyecto, se presentaron las siguientes oportunidades de mejora:
+
+-El proyecto funcionaba únicamente en su versión monólitica, la versión distribuida estaba sin terminar
+-El cálculo de Pi se realizaba con bastante lentitud cuando el número de puntos a generar superaba los 10E8
+-La versión sin terminar de la edición distribuida dependía enteramente de la existencia de los nodos, y había malentendidos en la resolución del problema
+
+Y al haberse trabajado en estas oportunidades, estos fueron los resultados:
+
+-La versión distribuida de la aplicación funciona, tanto para parámetros personalizados cómo para parametros cargados desde archivos csv.
+-La distribución se realiza a partir de diferentes hilos que se ejecutan en diversos nodos de procesamiento sobre la red.
+-Se agregó una opción para dar soporte a múltiples clientes conectando al servicio
+-El servicio Broker se encarga ahora del orquestrado y conexión de los nodos cliente y servidor, facilitando el cómputo de estos.
