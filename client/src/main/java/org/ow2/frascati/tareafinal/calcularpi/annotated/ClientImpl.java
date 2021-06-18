@@ -23,7 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ClientImpl
-  implements Runnable
+  implements Runnable,Exposer
 {
   //--------------------------------------------------------------------------
   // SCA Reference
@@ -32,19 +32,23 @@ public class ClientImpl
   @Property
 	private String clienturi;
   
-  private PointReceiver pr;
   private IBroker br;
 
-  @Reference(name="receivePoints")
-  public final void setRecibirService(PointReceiver service)
-  {
-    this.pr = service;
+  private PointReceiver calcBr;
+
+  public final void setClienturi(String uri){
+    clienturi = uri;
   }
 
   @Reference(name="comBroker")
   public final void setBrokerService(IBroker service)
   {
     this.br = service;
+  }
+
+  @Reference(name="calcBroker")
+  public final void setCalcBrokerService(PointReceiver service){
+    calcBr = service;
   }
 
   //GUI
@@ -57,7 +61,11 @@ public class ClientImpl
   public ClientImpl()
   {
     System.out.println("CLIENT created");
-    br.attachClient(clienturi);
+  }
+
+
+  public void expose(){
+    System.out.println("client exposed");
   }
 
   @Init
@@ -75,13 +83,15 @@ public class ClientImpl
     try
     {
       if(gui == null) 
-      {
+      { //RMI Methods
+        System.out.println("Attaching client on uri: "+clienturi);
+        br.attachClient(clienturi);
+        //GUI Methods
         gui = new GUI();
         gui.setLocationRelativeTo(null);
         gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         gui.setVisible(true);
-
-        //calcBttonEvent();
+        calcBttonEvent();
         //loadFileBttonEvent();
       }      
     }			
@@ -92,9 +102,6 @@ public class ClientImpl
     }
   }
 
-  public void getResult(long pi){
-      
-  }
 
   public void calcBttonEvent()
   {
@@ -116,15 +123,15 @@ public class ClientImpl
           //Variables de calculo
           float result = 0;
           long puntoscirculo = 0;      
-          Random rnd = new Random();
           
           //Asignar valores
           puntos = Long.parseLong(gui.getPointsTextField().getText().trim());
           seed = Long.parseLong(gui.getSeedTextField().getText().trim());
-          rnd.setSeed(seed);
 
           //Botar resultados
-          String results = "";
+          float pi = calcBr.receivePoints(puntos, seed, 1);
+          String results = "Pi is "+pi;
+          System.out.println(results);
 
           //Repetir el calculo 10 veces
           for(int j=0; j<10;j++)

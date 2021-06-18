@@ -9,7 +9,7 @@ import org.osoa.sca.annotations.Service;
 
 @Service
 public interface IBroker
-{    
+{
   public void attachClient(String clienturi);
   public void detachClient(String clienturi);
   public void attachServer(String serveruri);

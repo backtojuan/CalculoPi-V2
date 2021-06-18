@@ -25,7 +25,7 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 
 	//Servers and Clients list
 	private static LinkedList<PointGenerator> servers = new LinkedList<PointGenerator>();
-	private static LinkedList<PointReceiver> clients = new LinkedList<PointReceiver>();
+	private static LinkedList<Exposer> clients = new LinkedList<Exposer>();
 
 	//Total points inside the circle found by the nodes
 	private long pointsInside;
@@ -38,15 +38,14 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 	 * Default constructor method, as needed by FraSCAti
 	 */
 	public Broker() {
-		System.out.println("Broker created");
 	}
 
 	//Subscribe client to broker
 	public synchronized void attachClient(String clientUri) {
 		try {
-            PointReceiver client = (PointReceiver) Naming.lookup(clientUri);
+			System.out.println("Attaching new client with URI: " + clientUri);
+            Exposer client = (Exposer) Naming.lookup(clientUri);
 			clients.add(client);
-            System.out.println("Coneccting with client :" + clientUri);
         } catch (Exception e) {
             System.out.println("Error when binding with client : " + clientUri);
             e.printStackTrace();
@@ -64,10 +63,11 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 	//Subscribe server to broker
 	public synchronized void attachServer(String serverUri) {
 		try {
-            PointGenerator sever =(PointGenerator) Naming.lookup(serverUri);
-            System.out.println("Coneccting new server with uri :" + serverUri);
+			System.out.println("Attaching new server with URI: " + serverUri);
+			PointGenerator server = (PointGenerator) Naming.lookup(serverUri);
+			servers.add(server);
         } catch (Exception e) {
-            System.out.println("Error on binding with server on uri : " + serverUri);
+            System.out.println("Error on binding with server with uri: " + serverUri);
             e.printStackTrace();
         }
 	}
@@ -114,6 +114,6 @@ public class Broker implements IBroker, PointReceiver, Runnable {
 
 	@Override
 	public void run(){
-		System.out.println("broker has been initialized");
+		System.out.println("Broker is running");
 	}
 }

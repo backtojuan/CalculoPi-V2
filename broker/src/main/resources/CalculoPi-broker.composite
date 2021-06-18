@@ -21,6 +21,11 @@
       		<frascati:binding.rmi host="localhost" serviceName="rmiservice3" port="2001"/>
     	</service>  
 
+		<service name="BrokerCalcService">
+      		<interface.java interface="org.ow2.frascati.tareafinal.calcularpi.annotated.PointReceiver"></interface.java>
+      		<frascati:binding.rmi host="localhost" serviceName="rmiservice4" port="2002"/>
+    	</service>  
+
 		<implementation.java class="org.ow2.frascati.tareafinal.calcularpi.annotated.Broker" />
 	</component>		
 </composite>

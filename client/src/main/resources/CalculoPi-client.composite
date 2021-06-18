@@ -7,23 +7,30 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
   xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
   name="ClientRMI">
+
+  <service name="r" promote="client/r">
+    <interface.java interface="java.lang.Runnable" />
+  </service>
+
   <component name="client">
 
+    <property name="clienturi">rmi://localhost:2003/rmiservice1</property>
+
     <service name="r">
-      <interface.java interface="java.lang.Runnable" />
+      <interface.java interface="java.lang.Runnable"/>
     </service>
 
-    <service name="getResult">
-			<interface.java interface="CalculatePi"></interface.java>
-			<frascati:binding.rmi host="localhost" serviceName="rmiservice4" port="2002"/>
-		</service>
-
-    <reference name="receivePoints">
-      <frascati:binding.rmi host="localhost" serviceName="rmiservice1" port="1090"/>
-    </reference>
+    <service name="exposer">
+      <frascati:binding.rmi host="localhost" serviceName="rmiservice1" port="2003"/>
+      <interface.java interface="org.ow2.frascati.tareafinal.calcularpi.annotated.Exposer"/>
+    </service>
 
     <reference name="comBroker">
       <frascati:binding.rmi host="localhost" serviceName="rmiservice3" port="2001"/>
+    </reference>
+
+    <reference name="calcBroker">
+      <frascati:binding.rmi host="localhost" serviceName="rmiservice4" port="2002"/>
     </reference>
 
     <implementation.java class="org.ow2.frascati.tareafinal.calcularpi.annotated.ClientImpl" />

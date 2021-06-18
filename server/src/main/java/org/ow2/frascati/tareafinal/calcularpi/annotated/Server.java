@@ -18,11 +18,11 @@ import java.util.Random;
 public class Server implements PointGenerator, Runnable
 {    
 	@Property
-	private String serveruri;
+	public String serveruri;
 
   private IBroker br;
 
-  public void setServeruir(String serveruri){
+  public final void setServeruri(String serveruri){
     this.serveruri = serveruri;
   }
 
@@ -37,8 +37,7 @@ public class Server implements PointGenerator, Runnable
      */
     public Server()
     {
-      System.out.println("SERVER created.");		 
-      br.attachServer(serveruri); 
+      System.out.println("SERVER created.");
     }
 
     /**
@@ -72,7 +71,7 @@ public class Server implements PointGenerator, Runnable
 	// --------------------------------------------------------------------------
 	public final void run()
 	{
+    System.out.println("Attaching server to provided broker on URI: "+serveruri);
     br.attachServer(serveruri);
-    System.out.println("Server Attached to provided broker on URI: "+serveruri);
 	}
 }
